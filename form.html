@@ -1,0 +1,37 @@
+<html>
+    <head>
+    </head>
+    <body>
+    <label>Quote</label><input type="text" id="a" placeholder="Type here a"/>
+    <label>Category</label><input type="text" id="b" placeholder="Type here b"/>
+    <button onclick="send();">Send</button>
+    <script>
+        function send() {
+            var status = document.createElement("div");
+            status.style.color = "blue";
+            status.innerText = "Sending...";
+            document.body.appendChild(status);
+            var aValue = document.getElementById("a").value;
+            var bValue = document.getElementById("b").value;
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', "/new", true);
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState !== 4) return;
+                console.log("Received "+xhr.status+" "+xhr.statusText+" from POST");
+                if (Math.floor(xhr.status / 100) === 2) {
+                    status.style.color = "green";
+                    status.innerText = "OK 200: \n"+xhr.responseText;
+                } else {
+                    status.style.color = "red";
+                    status.innerText = "FAILED "+xhr.status+" "+xhr.statusText+": \n"+xhr.responseText;
+                }
+            };
+            xhr.send(JSON.stringify({
+                quote: aValue,
+                category: bValue
+            }));
+        }
+    </script>
+    </body>
+</html>
